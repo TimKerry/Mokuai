@@ -1,0 +1,12 @@
+[Script]
+# 屏蔽开屏广告（含 Android/iOS）
+百度网盘_开屏广告 = type=http-response,pattern=^https?:\/\/(pan|yun|pcs)\.baidu\.com\/(rest\/2\.0\/ad|api\/channel\/v\d\/url),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/BaiduNetdiskAd.js,script-update-interval=86400
+
+# 屏蔽推荐内容、信息流广告
+百度网盘_首页推荐 = type=http-response,pattern=^https?:\/\/pan\.baidu\.com\/act\/api\/activityentry,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/BaiduNetdiskFeed.js,script-update-interval=86400
+
+# 屏蔽视频播放页广告（部分设备可能不触发）
+百度网盘_视频广告 = type=http-response,pattern=^https?:\/\/pan\.baidu\.com\/api\/(stream\/ad|ad\/info),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/BaiduNetdiskVideoAd.js,script-update-interval=86400
+
+[MITM]
+hostname = *.baidu.com
