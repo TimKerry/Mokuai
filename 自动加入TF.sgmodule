@@ -1,24 +1,15 @@
-#!name=自动[加入/监控]TestFlight
-#!desc=1、自动加入TF使用前先获取账号令牌和填写应用ID[自己手动添加主机名testflight.apple.com]，一旦有新的名额即刻加入；2、监控TF位置不需要令牌也无需MITM
-#!author=奶思[https://github.com/fmz200], DecoAri[https://github.com/DecoAri], xream[https://github.com/xream]
-#!icon=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/testflight.png
-#!openUrl=https://apps.apple.com/app/id899247664
-#!tag=定时任务
-#!loon_version=3.2.4(787)
-#!homepage=https://github.com/fmz200/wool_scripts
-#!raw-url=https://github.com/fmz200/wool_scripts/raw/main/Loon/plugin/Auto_Join_TF.plugin
-#!tg-group=https://t.me/lanjieguanggao
-#!date=2025-09-21 01:17:08
-#!arguments=CaptureAccountToken:"false",RunTask:"false",RunMonitor:"true",CaptureAppID:"true",ManualAppIDs:"",TaskCron:"0 0/3 * * * ?",TaskMonitor:"0 * * * * ?"
+#!name=自动加入TF（含手动设置）
+#!desc=支持参数 TF_APP_ID；“手动设置TF_ID”会把 TF_APP_ID 写入持久化；主任务既支持 argument 也支持持久化
+#!author=Kerry Tim
+#!system=ios
+
+[Argument]
+# 可填一个或多个 AppID，逗号或换行分隔，例如：u6iogfd0, abcd1234
+TF_APP_ID =
 
 [Script]
-获取账号令牌 = type=http-request, pattern=^https?:\/\/testflight\.apple\.com\/v3\/accounts\/.*\/apps$, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTFKeys.js
+# 1) 手动把 TF_APP_ID 写入持久化（运行一次即可）
+手动设置TF_ID = type=generic,timeout=15,script-update-interval=0,script-path=https://raw.githubusercontent.com/TimKerry/jiaoben-/refs/heads/main/ManualSetTFIDs.js,argument=TF_APP_ID=%TF_APP_ID%
 
-# http-request ^https?:\/\/testflight\.apple\.com\/join\/(.*) script-path = https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTFKeys.js, tag = 应用ID捕获(可能抓不到), enable = {CaptureAppID}
-自动加入TF = type=cron, cronexp={{{TaskCron}}}, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTF.js, timeout=600
-
-监控TF位置 = type=cron, cronexp={{{TaskMonitor}}}, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoMonitorTF.js, timeout=30
-
-# 将 ManualAppIDs 写入上游脚本使用的 TF_APP_ID
-手动写入TF_APP_ID = type=cron, cronexp=0 0/30 * * * ?, script-path=https://raw.githubusercontent.com/TimKerry/jiaoben-/refs/heads/main/ManualSetTFIDs.js, argument={{{ManualAppIDs}}}, timeout=10
-
+# 2) 定时监控/自动加入（把参数也传进去，避免主脚本只读 argument 时取不到）
+自动加入TestFlight = type=cron,cronexp=30 * * * * ?,timeout=30,script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoMonitorTF.js,argument=TF_APP_ID=%TF_APP_ID%
