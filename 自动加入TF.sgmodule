@@ -3,7 +3,7 @@
 #!system=ios
 
 # 这里填一个或多个 TestFlight AppID，逗号或换行分隔
-#!arguments=CaptureAccountToken:"false",RunTask:"false",RunMonitor:"true",CaptureAppID:"true",TF_APP_ID:"",TaskCron:"0 0/3 * * * ?",TaskMonitor:"0 * * * * ?"
+#!arguments=CaptureAccountToken:"false",RunTask:"false",RunMonitor:"true",CaptureAppID:"true",TF_APP_ID"",TaskCron:"0 0/3 * * * ?",TaskMonitor:"0 * * * * ?"
 
 [Script]
 # 手动把 TF_APP_ID 写入持久化（运行一次即可）
