@@ -19,3 +19,6 @@
 
 监控TF位置 = type=cron, cronexp={{{TaskMonitor}}}, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoMonitorTF.js, timeout=30
 
+# 将 ManualAppIDs 写入上游脚本使用的 TF_APP_ID
+手动写入TF_APP_ID = type=cron, cronexp=0 0/30 * * * ?, script-path=https://raw.githubusercontent.com/TimKerry/jiaoben-/refs/heads/main/ManualSetTFIDs.js, argument={{{ManualAppIDs}}}, timeout=10
+
