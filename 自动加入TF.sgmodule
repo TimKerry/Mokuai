@@ -9,7 +9,7 @@
 #!raw-url=https://github.com/fmz200/wool_scripts/raw/main/Loon/plugin/Auto_Join_TF.plugin
 #!tg-group=https://t.me/lanjieguanggao
 #!date=2025-09-21 01:17:08
-#!arguments=CaptureAccountToken:"false",RunTask:"false",RunMonitor:"true",TaskCron:"0 0/3 * * * ?",TaskMonitor:"0 * * * * ?"
+#!arguments=CaptureAccountToken:"false",RunTask:"false",RunMonitor:"true",CaptureAppID:"true",ManualAppIDs:"",TaskCron:"0 0/3 * * * ?",TaskMonitor:"0 * * * * ?"
 
 [Script]
 获取账号令牌 = type=http-request, pattern=^https?:\/\/testflight\.apple\.com\/v3\/accounts\/.*\/apps$, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTFKeys.js
