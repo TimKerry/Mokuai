@@ -1,0 +1,13 @@
+#!name=TestFlight 监控助手（写入 AppID + 监控）
+#!desc=一键写入 fmz200_TF_APP_ID（支持多个 AppID），并提供监控任务
+#!author=Kerry+GPT
+
+[Script]
+# ① 一键写入（运行时在“参数”里填：appid=u6iogfd0 或直接 u6iogfd0,abcd1234）
+写入TF AppID(一次性) = type=generic, timeout=10, script-content=(()=>{let a=$argument||'';if(!a){$notification.post('写入失败','参数为空，示例: appid=u6iogfd0 或 u6iogfd0,abcd1234','');$done();return}a=a.replace(/，/g,',').replace(/[\\s\\t\\n\\r]+/g,',');let m=a.match(/appid=(.*)/i);let v=(m?m[1]:a).replace(/,+/g,',').replace(/^,|,$/g,'');if(!v){$notification.post('写入失败','未解析到有效AppID','');$done();return}$persistentStore.write(v,'fmz200_TF_APP_ID');$notification.post('已写入 fmz200_TF_APP_ID',v,'');$done()})()
+
+# ② 清空已写入的 AppID（可选）
+清空TF AppID = type=generic, timeout=10, script-content=(()=>{$persistentStore.write('', 'fmz200_TF_APP_ID');$notification.post('已清空 fmz200_TF_APP_ID','','');$done()})()
+
+# ③ 定时监控（来自 fmz200 仓库）
+监控TF是否可加入 = type=cron, cronexp=30 * * * * ?, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoMonitorTF.js, timeout=30, script-update-interval=0
