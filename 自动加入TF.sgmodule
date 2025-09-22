@@ -16,8 +16,8 @@
 获取账号令牌 = type=http-request, pattern=^https?:\/\/testflight\.apple\.com\/v3\/accounts\/.*\/apps$, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTFKeys.js
 
 # 应用ID捕获（可选） — 如果脚本里支持使用 AppID 参数的话
-# http-request ^https?:\/\/testflight\.apple\.com\/join\/(.*) script-path = https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTFKeys.js, tag = 应用ID捕获(可能抓不到), enable = {CaptureAppID}
+# http-request ^https?:\/\/testflight\.apple\.com\/join\/(.*) script-path = https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTFKeys.js, tag = 应用ID捕获(可能抓不到), enable = {Capturefmz200_TF_APP_ID}
 
-自动加入TF = type=cron, cronexp={{{TaskCron}}}, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTF.js, timeout=600, argument=AppID={{{AppID}}}
+自动加入TF = type=cron, cronexp={{{TaskCron}}}, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoJoinTF.js, timeout=600, argument=fmz200_TF_APP_ID={{{fmz200_TF_APP_ID}}}
 
-监控TF位置 = type=cron, cronexp={{{TaskMonitor}}}, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoMonitorTF.js, timeout=30, argument=AppID={{{AppID}}}
+监控TF位置 = type=cron, cronexp={{{TaskMonitor}}}, script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoMonitorTF.js, timeout=30, argument=fmz200_TF_APP_ID={{{fmz200_TF_APP_ID}}}
