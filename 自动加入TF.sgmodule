@@ -1,0 +1,8 @@
+#!name=TestFlight 自动监控
+#!desc=定时监控指定 TestFlight 应用是否可加入
+#!author=Kerry Tim (改编)
+#!system=ios
+#!arg=TF_APP_ID=请输入TF应用ID
+
+[Script]
+监控TF是否可加入 = type=cron,cronexp=30 * * * * ?,script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/TestFlight/AutoMonitorTF.js,timeout=30,argument=TF_APP_ID=$TF_APP_ID
