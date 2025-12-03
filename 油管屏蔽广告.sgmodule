@@ -1,0 +1,65 @@
+#!name=YouTube 去广告 - Pro
+#!desc=增强版 YouTube 去广告（规则 + rewrite + JS 注入） by ChatGPT
+#!author=ChatGPT
+
+[General]
+loglevel = notify
+
+[Proxy]
+# 如果你需要走代理，请在这里定义/引用你的代理。示例:
+# Proxy = ProxyA = ss,1.2.3.4,8388,method=aes-256-gcm,password=pass
+
+[Rule]
+# ——— 基本广告域名封锁 ———
+DOMAIN-SUFFIX,googleads.g.doubleclick.net,REJECT
+DOMAIN-SUFFIX,pagead2.googlesyndication.com,REJECT
+DOMAIN-SUFFIX,securepubads.g.doubleclick.net,REJECT
+DOMAIN-SUFFIX,ad.doubleclick.net,REJECT
+DOMAIN-SUFFIX,adservice.google.com,REJECT
+DOMAIN-SUFFIX,stats.g.doubleclick.net,REJECT
+DOMAIN-SUFFIX,partnerad.l.doubleclick.net,REJECT
+DOMAIN-SUFFIX,ads.youtube.com,REJECT
+DOMAIN-SUFFIX,youtubead.net,REJECT
+DOMAIN-SUFFIX,sponsor.rocks,REJECT
+DOMAIN-SUFFIX,adservice.google.com.hk,REJECT
+DOMAIN-SUFFIX,adservice.google.cn,REJECT
+
+# 屏蔽一些常见广告/统计子路径（对 App 与网页都有效）
+URL-REGEX,adformat=,REJECT
+URL-REGEX,.*(/get_ads|/get_midroll|/api/stats/ads|/pagead/|/ptracking).* ,REJECT
+
+# 对部分非关键 google 域名也做 REJECT（谨慎使用）
+DOMAIN-SUFFIX,ads.g.doubleclick.net,REJECT
+DOMAIN-SUFFIX,partner.googleadservices.com,REJECT
+
+# ——— 其它规则：对特定资源注入脚本 ——（生效需要 MITM，用于网页注入）
+# 注入网页脚本：匹配 youtube watch 页面与 m.youtube
+PROCESS-NAME,Surge,DIRECT
+
+[Script]
+# 注：script-path 使用相对或绝对路径，确保 Surge 能访问该文件
+# 1) 对 watch 页面注入前端去广告脚本（修改 DOM & 覆盖 fetch/XHR）
+youtube-watch-response = type=http-response,pattern=^https?:\/\/(?:www|m)\.youtube\.com\/watch,script-path=https://raw.githubusercontent.com/TimKerry/Script/refs/heads/main/youtube_adblock.js
+# 2) 对 embedded / embed 页面注入（防止内嵌广告）
+youtube-embed-response = type=http-response,pattern=^https?:\/\/(?:www|www-)?youtube\.com\/embed,script-path=https://raw.githubusercontent.com/TimKerry/Script/refs/heads/main/youtube_adblock.js
+# 3) 拦截部分 JSON 广告接口，尝试修改响应体（如 /youtubei/v1/）
+youtube-api-response = type=http-response,pattern=^https?:\/\/www\.youtube\.com\/youtubei\/v1\/.*,script-path=https://raw.githubusercontent.com/TimKerry/Script/refs/heads/main/youtube_adblock.js
+
+[Rewrite]
+# 可选的 rewrite——把某些广告接口重写到一个本地空白响应（谨慎）
+# （Surge 的 rewrite 用法因版本不同可能略异，若不支持 rewrite 可忽略该段）
+# 举例：把 /get_midroll_ 的请求重写到空白内容（降低广告出现）
+# NOTE: 如果你的 Surge 版本不支持直接 rewrite 到 data:, 可删除这些行
+^https?:\/\/(www|s)\.youtube\.com\/get_midroll_ url 302 http://127.0.0.1/
+
+[MITM]
+# MITM 仅用于注入脚本与修改可解密的 HTTP/HTTPS 请求 —— 不会解密 QUIC 视频流
+hostname = *.youtube.com, *.googlevideo.com, *.youtube-nocookie.com
+# 如果你只想注入网页脚本，可以把 googlevideo 去掉，只保留 youtube.com
+# hostname = *.youtube.com
+
+[Proxy Group]
+# (占位) 如需，我可以把模块改成把 YouTube Premium 切换策略写入这里
+
+[Remark]
+# 保存好 youtube_adblock.js 到与此模块同一目录或 Surge 支持的脚本目录。
